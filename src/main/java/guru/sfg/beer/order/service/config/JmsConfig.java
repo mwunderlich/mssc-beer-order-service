@@ -1,6 +1,3 @@
-/*
- * Copyright (c) by censhare AG
- */
 package guru.sfg.beer.order.service.config;
 
 import org.springframework.context.annotation.Bean;
