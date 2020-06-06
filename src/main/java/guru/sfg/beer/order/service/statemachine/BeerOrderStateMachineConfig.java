@@ -40,10 +40,16 @@ public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<B
     @Override
     public void configure(StateMachineTransitionConfigurer<BeerOrderStatusEnum, BeerOrderEventsEnum> transitions) throws Exception {
         transitions
-                .withExternal().source(NEW).target(NEW).event(BeerOrderEventsEnum.VALIDATE_ORDER)
+                .withExternal()
+                    .source(NEW).target(BeerOrderStatusEnum.VALIDATION_PENDING)
+                    .event(BeerOrderEventsEnum.VALIDATE_ORDER)
                 .and()
-                .withExternal().source(NEW).target(VALIDATED).event(VALIDATION_PASSED)
+                .withExternal()
+                    .source(NEW).target(VALIDATED)
+                    .event(VALIDATION_PASSED)
                 .and()
-                .withExternal().source(NEW).target(VALIDATED_EXCEPTION).event(VALIDATION_FAILED);
+                .withExternal()
+                    .source(NEW).target(VALIDATED_EXCEPTION)
+                    .event(VALIDATION_FAILED);
     }
 }
