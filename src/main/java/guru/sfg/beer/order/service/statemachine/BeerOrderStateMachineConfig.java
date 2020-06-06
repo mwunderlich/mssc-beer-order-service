@@ -2,7 +2,9 @@ package guru.sfg.beer.order.service.statemachine;
 
 import guru.sfg.beer.order.service.domain.BeerOrderEventsEnum;
 import guru.sfg.beer.order.service.domain.BeerOrderStatusEnum;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.statemachine.action.Action;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
@@ -21,9 +23,12 @@ import static guru.sfg.beer.order.service.domain.BeerOrderStatusEnum.VALIDATED_E
  *
  * @author Martin Wunderlich
  */
+@RequiredArgsConstructor
 @Configuration
 @EnableStateMachineFactory
 public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<BeerOrderStatusEnum, BeerOrderEventsEnum> {
+
+    private final Action<BeerOrderStatusEnum, BeerOrderEventsEnum> validateOrderAction;
 
     @Override
     public void configure(StateMachineStateConfigurer<BeerOrderStatusEnum, BeerOrderEventsEnum> states) throws Exception {
@@ -43,6 +48,7 @@ public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<B
                 .withExternal()
                     .source(NEW).target(BeerOrderStatusEnum.VALIDATION_PENDING)
                     .event(BeerOrderEventsEnum.VALIDATE_ORDER)
+                    .action(validateOrderAction)
                 .and()
                 .withExternal()
                     .source(NEW).target(VALIDATED)
