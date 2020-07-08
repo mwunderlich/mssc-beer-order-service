@@ -12,8 +12,10 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 
 import java.util.EnumSet;
 
+import static guru.sfg.beer.order.service.domain.BeerOrderEventsEnum.ALLOCATE_ORDER;
 import static guru.sfg.beer.order.service.domain.BeerOrderEventsEnum.VALIDATION_FAILED;
 import static guru.sfg.beer.order.service.domain.BeerOrderEventsEnum.VALIDATION_PASSED;
+import static guru.sfg.beer.order.service.domain.BeerOrderStatusEnum.ALLOCATION_PENDING;
 import static guru.sfg.beer.order.service.domain.BeerOrderStatusEnum.NEW;
 import static guru.sfg.beer.order.service.domain.BeerOrderStatusEnum.VALIDATED;
 import static guru.sfg.beer.order.service.domain.BeerOrderStatusEnum.VALIDATED_EXCEPTION;
@@ -29,6 +31,7 @@ import static guru.sfg.beer.order.service.domain.BeerOrderStatusEnum.VALIDATED_E
 public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<BeerOrderStatusEnum, BeerOrderEventsEnum> {
 
     private final Action<BeerOrderStatusEnum, BeerOrderEventsEnum> validateOrderAction;
+    private final Action<BeerOrderStatusEnum, BeerOrderEventsEnum> allocateOrderRequest;
 
     @Override
     public void configure(StateMachineStateConfigurer<BeerOrderStatusEnum, BeerOrderEventsEnum> states) throws Exception {
@@ -56,6 +59,10 @@ public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<B
                 .and()
                 .withExternal()
                     .source(NEW).target(VALIDATED_EXCEPTION)
-                    .event(VALIDATION_FAILED);
+                    .event(VALIDATION_FAILED)
+                .and().withExternal()
+                    .source(VALIDATED).target(ALLOCATION_PENDING)
+                    .event(ALLOCATE_ORDER)
+                    .action(allocateOrderRequest);
     }
 }
