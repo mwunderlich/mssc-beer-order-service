@@ -31,7 +31,7 @@ import static guru.sfg.beer.order.service.domain.BeerOrderStatusEnum.VALIDATED_E
 public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<BeerOrderStatusEnum, BeerOrderEventsEnum> {
 
     private final Action<BeerOrderStatusEnum, BeerOrderEventsEnum> validateOrderAction;
-    private final Action<BeerOrderStatusEnum, BeerOrderEventsEnum> allocateOrderRequest;
+    private final Action<BeerOrderStatusEnum, BeerOrderEventsEnum> allocateOrderAction;
 
     @Override
     public void configure(StateMachineStateConfigurer<BeerOrderStatusEnum, BeerOrderEventsEnum> states) throws Exception {
@@ -63,6 +63,6 @@ public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<B
                 .and().withExternal()
                     .source(VALIDATED).target(ALLOCATION_PENDING)
                     .event(ALLOCATE_ORDER)
-                    .action(allocateOrderRequest);
+                    .action(allocateOrderAction);
     }
 }
